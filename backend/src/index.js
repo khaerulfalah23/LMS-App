@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 
 import globalRoutes from './routes/globalRoutes.js';
 import connectDB from './utils/database.js';
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api', globalRoutes);
+app.use('/api', authRoutes);
 
 app.listen(port, () => {
   console.log(`LMS Backend listening on port ${port}`);
