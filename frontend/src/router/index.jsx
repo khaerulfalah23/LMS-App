@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
+import SignUpPage from '../pages/SignUp';
 
 const router = createBrowserRouter([
   {
@@ -8,6 +9,10 @@ const router = createBrowserRouter([
         <h1>hello</h1>
       </div>
     ),
+  },
+  {
+    path: '/manager/sign-up',
+    element: <SignUpPage />,
   },
 ]);
 
