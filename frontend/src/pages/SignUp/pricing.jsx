@@ -4,7 +4,7 @@ import { postSignUp } from '../../services/authService';
 import { useMutation } from '@tanstack/react-query';
 
 export default function Pricing({ data }) {
-  const { isLoading, mutateAsync } = useMutation({
+  const { isPending, mutateAsync } = useMutation({
     mutationFn: () => postSignUp(data),
   });
 
@@ -173,7 +173,7 @@ export default function Pricing({ data }) {
           </div>
           <hr className='border-[#262A56]' />
           <div className='flex flex-col gap-3'>
-            <button onClick={submitData} disabled={isLoading}>
+            <button onClick={submitData} disabled={isPending}>
               <div className='flex items-center justify-center gap-3 w-full rounded-full border p-[14px_20px] transition-all duration-300 hover:bg-[#662FFF] hover:border-[#8661EE] hover:shadow-[-10px_-6px_10px_0_#7F33FF_inset] bg-[#662FFF] border-[#8661EE] shadow-[-10px_-6px_10px_0_#7F33FF_inset]'>
                 <span className='font-semibold text-white'>
                   Choose This Plan
