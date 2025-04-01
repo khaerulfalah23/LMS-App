@@ -3,6 +3,7 @@ import multer from 'multer';
 import { verifyToken } from '../middlewares/verifyToken.js';
 import { fileFilter, fileStorageCourse } from '../utils/multer.js';
 import {
+  deleteCourse,
   getCourses,
   postCourse,
   updateCourse,
@@ -28,5 +29,6 @@ courseRoutes.put(
   uploads.single('thumbnail'),
   updateCourse
 );
+courseRoutes.delete('/courses/:id', verifyToken, deleteCourse);
 
 export default courseRoutes;

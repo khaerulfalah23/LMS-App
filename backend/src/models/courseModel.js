@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import courseDetailModel from './courseDetailModel.js';
+import categoryModel from './categoryModel.js';
 
 const courseModel = mongoose.Schema({
   name: { type: String, required: true },
