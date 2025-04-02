@@ -4,6 +4,7 @@ import { verifyToken } from '../middlewares/verifyToken.js';
 import { fileFilter, fileStorageCourse } from '../utils/multer.js';
 import {
   deleteCourse,
+  getCourseById,
   getCourses,
   postCourse,
   updateCourse,
@@ -17,6 +18,7 @@ const uploads = multer({
 });
 
 courseRoutes.get('/courses', verifyToken, getCourses);
+courseRoutes.get('/courses/:id', verifyToken, getCourseById);
 courseRoutes.post(
   '/courses',
   verifyToken,
