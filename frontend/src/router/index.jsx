@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import SignUpPage from '../pages/SignUp';
 import SignInPage from '../pages/SignIn';
 import SuccessCheckoutPage from '../pages/SuccessCheckout';
+import LayoutDashboard from '../components/layout';
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,20 @@ const router = createBrowserRouter([
   {
     path: '/success-checkout',
     element: <SuccessCheckoutPage />,
+  },
+  {
+    path: '/manager',
+    element: <LayoutDashboard />,
+    children: [
+      {
+        index: true,
+        element: (
+          <div>
+            <h1>hello</h1>
+          </div>
+        ),
+      },
+    ],
   },
 ]);
 
