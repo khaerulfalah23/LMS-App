@@ -8,6 +8,7 @@ import connectDB from './utils/database.js';
 import authRoutes from './routes/authRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/api', globalRoutes);
 app.use('/api', authRoutes);
 app.use('/api', paymentRoutes);
 app.use('/api', courseRoutes);
+app.use('/api', categoryRoutes);
 
 app.listen(port, () => {
   console.log(`LMS Backend listening on port ${port}`);
