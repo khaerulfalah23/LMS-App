@@ -1,8 +1,10 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, redirect } from 'react-router-dom';
 import SignUpPage from '../pages/SignUp';
 import SignInPage from '../pages/SignIn';
 import SuccessCheckoutPage from '../pages/SuccessCheckout';
 import LayoutDashboard from '../components/layout';
+import { MANAGER_SESSION, STORAGE_KEY } from '../utils/const';
+import secureLocalStorage from 'react-secure-storage';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,16 @@ const router = createBrowserRouter([
   },
   {
     path: '/manager',
+    id: MANAGER_SESSION,
+    loader: async () => {
+      const session = secureLocalStorage.getItem(STORAGE_KEY);
+
+      if (!session || session.role !== 'manager') {
+        throw redirect('/manager/sign-in');
+      }
+
+      return session;
+    },
     element: <LayoutDashboard />,
     children: [
       {
