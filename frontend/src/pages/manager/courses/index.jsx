@@ -1,7 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
 import CardCourse from './card';
 
 export default function ManageCoursePage() {
+  const courses = useLoaderData();
+
   return (
     <>
       <header className='flex items-center justify-between gap-[30px]'>
@@ -32,7 +34,16 @@ export default function ManageCoursePage() {
         id='CourseList'
         className='flex flex-col w-full rounded-[30px] p-[30px] gap-[30px] bg-[#F8FAFB]'
       >
-        <CardCourse />
+        {courses?.data?.map((course) => (
+          <CardCourse
+            key={course._id}
+            id={course._id}
+            category={course.category.name}
+            imageUrl={course.thumbnail_url}
+            name={course.name}
+            totalStudents={course.totalStudents}
+          />
+        ))}
       </section>
     </>
   );

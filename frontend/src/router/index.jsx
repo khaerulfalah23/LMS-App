@@ -7,6 +7,9 @@ import LayoutDashboard from '../components/layout';
 import secureLocalStorage from 'react-secure-storage';
 import ManageCoursePage from '../pages/manager/courses';
 import ManageCreateCoursePage from '../pages/manager/create-courses';
+import ManageCourseDetailPage from '../pages/manager/course-detail';
+import { getCategories } from '../services/categoryService';
+import { getCourseDetail, getCourses } from '../services/courseService';
 
 const router = createBrowserRouter([
   {
@@ -53,10 +56,37 @@ const router = createBrowserRouter([
       },
       {
         path: '/manager/courses',
+        loader: async () => {
+          const courses = await getCourses();
+          return courses;
+        },
         element: <ManageCoursePage />,
       },
       {
         path: '/manager/courses/create',
+        loader: async () => {
+          const categories = await getCategories();
+          return { categories, course: null };
+        },
+        element: <ManageCreateCoursePage />,
+      },
+      {
+        path: '/manager/courses/:id',
+        loader: async ({ params }) => {
+          const course = await getCourseDetail(params.id);
+
+          return course?.data;
+        },
+        element: <ManageCourseDetailPage />,
+      },
+      {
+        path: '/manager/courses/edit/:id',
+        loader: async ({ params }) => {
+          const categories = await getCategories();
+          const course = await getCourseDetail(params.id);
+
+          return { categories, course: course?.data };
+        },
         element: <ManageCreateCoursePage />,
       },
     ],

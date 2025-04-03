@@ -1,12 +1,30 @@
-import { Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { Link, useRevalidator } from 'react-router-dom';
+import { deleteCourse } from '../../../services/courseService';
 
 export default function CardCourse({
-  id = 1,
-  imageUrl = '/assets/images/thumbnails/th-1.png',
-  name = 'Responsive Design Triclorem Lorem, ipsum dolor.',
-  totalStudents = 554,
-  category = 'Programming',
+  id,
+  imageUrl,
+  name,
+  totalStudents,
+  category,
 }) {
+  const revalidator = useRevalidator();
+
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: () => deleteCourse(id),
+  });
+
+  const handleDelete = async () => {
+    try {
+      await mutateAsync();
+
+      revalidator.revalidate();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className='card flex items-center gap-5'>
       <div className='flex shrink-0 w-[140px] h-[110px] rounded-[20px] bg-[#D9D9D9] overflow-hidden'>
@@ -48,6 +66,8 @@ export default function CardCourse({
         </Link>
         <button
           type='button'
+          onClick={handleDelete}
+          disabled={isPending}
           className='w-fit rounded-full bg-red-500 text-white p-[14px_20px] font-semibold text-nowrap'
         >
           Delete
