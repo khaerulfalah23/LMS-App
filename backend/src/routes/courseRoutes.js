@@ -6,9 +6,12 @@ import {
   deleteCourse,
   getCourseById,
   getCourses,
+  postContentCourse,
   postCourse,
   updateCourse,
 } from '../controllers/courseController.js';
+import { contentSchema } from '../utils/schema.js';
+import { validateRequest } from '../middlewares/validateRequest.js';
 
 const courseRoutes = express.Router();
 
@@ -32,5 +35,12 @@ courseRoutes.put(
   updateCourse
 );
 courseRoutes.delete('/courses/:id', verifyToken, deleteCourse);
+
+courseRoutes.post(
+  '/courses/contents',
+  verifyToken,
+  validateRequest(contentSchema),
+  postContentCourse
+);
 
 export default courseRoutes;

@@ -3,6 +3,7 @@ import path from 'path';
 import categoryModel from '../models/categoryModel.js';
 import courseModel from '../models/courseModel.js';
 import userModel from '../models/userModel.js';
+import courseDetailModel from '../models/courseDetailModel.js';
 import { courseSchema } from '../utils/schema.js';
 
 export const getCourses = async (req, res) => {
@@ -219,6 +220,41 @@ export const deleteCourse = async (req, res) => {
     return res.json({
       message: 'Delete course success',
     });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: 'Internal server error',
+    });
+  }
+};
+
+export const postContentCourse = async (req, res) => {
+  try {
+    const body = req.body;
+
+    const course = await courseModel.findById(body.courseId);
+
+    const content = new courseDetailModel({
+      title: body.title,
+      type: body.type,
+      course: course._id,
+      text: body.text,
+      youtubeId: body.youtubeId,
+    });
+
+    await content.save();
+
+    await courseModel.findByIdAndUpdate(
+      course._id,
+      {
+        $push: {
+          details: content._id,
+        },
+      },
+      { new: true }
+    );
+
+    return res.json({ message: 'Create Content Success' });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
