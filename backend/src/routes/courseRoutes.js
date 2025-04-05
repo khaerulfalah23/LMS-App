@@ -10,6 +10,7 @@ import {
   getDetailContent,
   postContentCourse,
   postCourse,
+  updateContentCourse,
   updateCourse,
 } from '../controllers/courseController.js';
 import { contentSchema } from '../utils/schema.js';
@@ -43,6 +44,12 @@ courseRoutes.post(
   verifyToken,
   validateRequest(contentSchema),
   postContentCourse
+);
+courseRoutes.put(
+  '/courses/contents/:id',
+  verifyToken,
+  validateRequest(contentSchema),
+  updateContentCourse
 );
 courseRoutes.delete('/courses/contents/:id', verifyToken, deleteContentCourse);
 courseRoutes.get('/courses/contents/:id', verifyToken, getDetailContent);
