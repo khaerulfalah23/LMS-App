@@ -51,4 +51,32 @@ courseModel.post('findOneAndDelete', async (doc) => {
   }
 });
 
+courseModel.pre('findOneAndUpdate', async function (next) {
+  const docToUpdate = await this.model.findOne(this.getQuery());
+  if (docToUpdate) {
+    this._prevCategory = docToUpdate.category;
+  }
+  next();
+});
+
+// Post: Update array courses di kategori lama & baru
+courseModel.post('findOneAndUpdate', async function (doc) {
+  if (doc) {
+    const prevCategory = this._prevCategory;
+    const newCategory = doc.category;
+
+    if (String(prevCategory) !== String(newCategory)) {
+      // Hapus dari kategori lama
+      await categoryModel.findByIdAndUpdate(prevCategory, {
+        $pull: { courses: doc._id },
+      });
+
+      // Tambahkan ke kategori baru
+      await categoryModel.findByIdAndUpdate(newCategory, {
+        $push: { courses: doc._id },
+      });
+    }
+  }
+});
+
 export default mongoose.model('Course', courseModel);

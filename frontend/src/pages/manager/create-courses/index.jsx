@@ -25,7 +25,7 @@ export default function ManageCreateCoursePage() {
     defaultValues: {
       name: course?.name,
       tagline: course?.tagline,
-      categoryId: course?.category,
+      categoryId: course?.category?._id,
       description: course?.description,
     },
   });

@@ -41,7 +41,7 @@ export default function ManageCoursePage() {
             category={course.category.name}
             imageUrl={course.thumbnail_url}
             name={course.name}
-            totalStudents={course.totalStudents}
+            totalStudents={course.total_students}
           />
         ))}
       </section>

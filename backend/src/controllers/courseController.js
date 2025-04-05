@@ -52,7 +52,7 @@ export const getCourseById = async (req, res) => {
       .findById(id)
       .populate({
         path: 'category',
-        select: 'name -_id',
+        select: 'name _id',
       })
       .populate({
         path: 'details',
@@ -174,14 +174,18 @@ export const updateCourse = async (req, res) => {
       });
     }
 
-    await courseModel.findByIdAndUpdate(courseId, {
-      name: parse.data.name,
-      category: category._id,
-      description: parse.data.description,
-      tagline: parse.data.tagline,
-      thumbnail: req?.file ? req.file?.filename : oldCourse.thumbnail,
-      manager: req.user._id,
-    });
+    await courseModel.findByIdAndUpdate(
+      courseId,
+      {
+        name: parse.data.name,
+        category: category._id,
+        description: parse.data.description,
+        tagline: parse.data.tagline,
+        thumbnail: req?.file ? req.file?.filename : oldCourse.thumbnail,
+        manager: req.user._id,
+      },
+      { new: true }
+    );
 
     return res.json({ message: 'Update Course Success' });
   } catch (error) {
