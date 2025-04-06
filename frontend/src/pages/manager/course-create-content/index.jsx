@@ -250,6 +250,11 @@ export default function ManageContentCreatePage() {
           </button>
           <button
             type='submit'
+            disabled={
+              content === undefined
+                ? mutateCreate.isLoading
+                : mutateUpdate.isLoading
+            }
             className='w-full rounded-full p-[14px_20px] font-semibold text-[#FFFFFF] bg-[#662FFF] text-nowrap'
           >
             {content === undefined ? 'Add' : 'Edit'} Content Now

@@ -1,6 +1,23 @@
-import { Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { Link, useRevalidator } from 'react-router-dom';
+import { deleteDetailContent } from '../../../services/courseService';
 
 export default function ContentItem({ id, index, type, title, courseId }) {
+  const revalidator = useRevalidator();
+
+  const { isLoading, mutateAsync } = useMutation({
+    mutationFn: () => deleteDetailContent(id),
+  });
+
+  const handleDelete = async () => {
+    try {
+      await mutateAsync();
+
+      revalidator.revalidate();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className='card flex items-center gap-5'>
       <div className='relative flex shrink-0 w-[140px] h-[110px] '>
@@ -41,14 +58,14 @@ export default function ContentItem({ id, index, type, title, courseId }) {
         >
           Edit Content
         </Link>
-        {/* <button
+        <button
           type='button'
           disabled={isLoading}
           onClick={handleDelete}
           className='w-fit rounded-full p-[14px_20px] bg-[#FF435A] font-semibold text-white text-nowrap'
         >
           Delete
-        </button> */}
+        </button>
       </div>
     </div>
   );
