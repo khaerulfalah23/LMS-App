@@ -17,13 +17,14 @@ import {
 } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import { contentSchema } from '../../../utils/zodSchema';
-import { createContent } from '../../../services/courseService';
+import { createContent, updateContent } from '../../../services/courseService';
 import { useMutation } from '@tanstack/react-query';
 
 export default function ManageContentCreatePage() {
-  const { id } = useParams();
+  const content = useLoaderData();
+  const { id, contentId } = useParams();
   const navigate = useNavigate();
 
   const {
@@ -34,6 +35,12 @@ export default function ManageContentCreatePage() {
     watch,
   } = useForm({
     resolver: zodResolver(contentSchema),
+    defaultValues: {
+      title: content?.title,
+      type: content?.type,
+      youtubeId: content?.youtubeId,
+      text: content?.text,
+    },
   });
 
   const type = watch('type');
@@ -42,12 +49,23 @@ export default function ManageContentCreatePage() {
     mutationFn: (data) => createContent(data),
   });
 
+  const mutateUpdate = useMutation({
+    mutationFn: (data) => updateContent(data, contentId),
+  });
+
   const onSubmit = async (values) => {
     try {
-      await mutateCreate.mutateAsync({
-        ...values,
-        courseId: id,
-      });
+      if (content === undefined) {
+        await mutateCreate.mutateAsync({
+          ...values,
+          courseId: id,
+        });
+      } else {
+        await mutateUpdate.mutateAsync({
+          ...values,
+          courseId: id,
+        });
+      }
 
       navigate(`/manager/courses/${id}`);
     } catch (error) {
@@ -68,7 +86,7 @@ export default function ManageContentCreatePage() {
           Course
         </span>
         <span className="last-of-type:after:content-[''] last-of-type:font-semibold">
-          Add Content
+          {content === undefined ? 'Add' : 'Edit'} Content
         </span>
       </div>
       <header className='flex items-center justify-between gap-[30px]'>
@@ -82,7 +100,7 @@ export default function ManageContentCreatePage() {
           </div>
           <div>
             <h1 className='font-extrabold text-[28px] leading-[42px]'>
-              Add Content
+              {content === undefined ? 'Add' : 'Edit'} Content
             </h1>
             <p className='text-[#838C9D] mt-[1]'>
               Give a best content for the course
@@ -210,6 +228,7 @@ export default function ManageContentCreatePage() {
                   Table,
                   Undo,
                 ],
+                initialData: content?.text,
               }}
               onChange={(_, editor) => {
                 const data = editor.getData();
@@ -233,7 +252,7 @@ export default function ManageContentCreatePage() {
             type='submit'
             className='w-full rounded-full p-[14px_20px] font-semibold text-[#FFFFFF] bg-[#662FFF] text-nowrap'
           >
-            AddContent Now
+            {content === undefined ? 'Add' : 'Edit'} Content Now
           </button>
         </div>
       </form>
