@@ -15,6 +15,7 @@ import {
   getCourses,
   getDetailContent,
 } from '../services/courseService';
+import ManageCoursePreviewPage from '../pages/manager/course-preview';
 
 const router = createBrowserRouter([
   {
@@ -106,6 +107,10 @@ const router = createBrowserRouter([
           return content?.data;
         },
         element: <ManageContentCreatePage />,
+      },
+      {
+        path: '/manager/courses/:id/preview',
+        element: <ManageCoursePreviewPage />,
       },
     ],
   },
