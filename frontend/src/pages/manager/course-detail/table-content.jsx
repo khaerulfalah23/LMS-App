@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import ContentItem from './content-item';
 
 export default function TableContent({ details, courseId }) {
   return (
