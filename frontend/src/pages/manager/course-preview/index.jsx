@@ -1,10 +1,28 @@
-import { Link, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useLoaderData, useParams } from 'react-router-dom';
 import Header from '../../../components/header';
 import ContentText from './content-text';
 import ContentVideo from './content-video';
 
 export default function ManageCoursePreviewPage({ isAdmin = true }) {
   const { id } = useParams();
+  const course = useLoaderData();
+  const [activeContent, setActiveContent] = useState(course?.details[0]);
+
+  const handleChangeContent = (content) => {
+    setActiveContent(content);
+  };
+
+  const handleNextContent = (content) => {
+    const currIndex = course?.details?.findIndex(
+      (val) => val._id === content._id
+    );
+
+    if (currIndex < course?.details.length - 1) {
+      handleChangeContent(course.details[currIndex + 1]);
+    }
+  };
+
   return (
     <div className='flex min-h-screen'>
       <aside className='sidebar-container fixed h-[calc(100vh-20px)] w-full max-w-[330px] my-[10px] ml-[10px] bg-[#060A23] overflow-hidden flex flex-1 rounded-[20px]'>
@@ -29,20 +47,30 @@ export default function ManageCoursePreviewPage({ isAdmin = true }) {
               </h2>
             </div>
             <ul className='flex flex-col gap-4'>
-              <li>
-                <a href='course-learning-video.html'>
-                  <div className='flex items-center gap-3 w-full rounded-full border p-[14px_20px] transition-all duration-300 hover:bg-[#662FFF] hover:border-[#8661EE] hover:shadow-[-10px_-6px_10px_0_#7F33FF_inset] bg-[#070B24] border-[#24283E] shadow-[-10px_-6px_10px_0_#181A35_inset]'>
-                    <img
-                      src='/assets/images/icons/video-play-white.svg'
-                      className='w-6 h-6'
-                      alt='icon'
-                    />
-                    <span className='w-full font-semibold text-white line-clamp-1 transition-all duration-300 hover:line-clamp-none'>
-                      Install figma plugins
-                    </span>
-                  </div>
-                </a>
-              </li>
+              {course?.details?.map((item) => (
+                <li key={item._id}>
+                  <button
+                    onClick={() => handleChangeContent(item)}
+                    type='button'
+                    className='w-full text-left'
+                  >
+                    <div className='flex items-center gap-3 w-full rounded-full border p-[14px_20px] transition-all duration-300 hover:bg-[#662FFF] hover:border-[#8661EE] hover:shadow-[-10px_-6px_10px_0_#7F33FF_inset] bg-[#070B24] border-[#24283E] shadow-[-10px_-6px_10px_0_#181A35_inset]'>
+                      <img
+                        src={`/assets/images/icons/${
+                          item.type === 'text'
+                            ? 'note-white'
+                            : 'video-play-white'
+                        }.svg`}
+                        className='w-6 h-6'
+                        alt='icon'
+                      />
+                      <span className='w-full font-semibold text-white line-clamp-1 transition-all duration-300 hover:line-clamp-none'>
+                        {item.title}
+                      </span>
+                    </div>
+                  </button>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>
@@ -55,8 +83,17 @@ export default function ManageCoursePreviewPage({ isAdmin = true }) {
       <main className='flex flex-col flex-1 gap-[30px] p-[30px] ml-[340px]'>
         <Header type={isAdmin ? 'manager' : 'student'} />
         <div className='relative flex flex-col gap-[26px]'>
-          <ContentText />
-          <ContentVideo />
+          {activeContent?.type === 'text' ? (
+            <ContentText
+              content={activeContent}
+              handleNext={handleNextContent}
+            />
+          ) : (
+            <ContentVideo
+              content={activeContent}
+              handleNext={handleNextContent}
+            />
+          )}
         </div>
       </main>
     </div>
