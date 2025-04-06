@@ -21,3 +21,35 @@ export const createCourseSchema = z.object({
 export const updateCourseSchema = createCourseSchema.partial({
   thumbnail: true,
 });
+
+export const contentSchema = z
+  .object({
+    title: z.string().min(5),
+    type: z.string().min(3, { message: 'Type is Required' }),
+    youtubeId: z.string().optional(),
+    text: z.string().optional(),
+  })
+  .superRefine((val, ctx) => {
+    const parseVideoId = z.string().min(4).safeParse(val.youtubeId);
+    const parseText = z.string().min(4).safeParse(val.text);
+
+    if (val.type === 'video') {
+      if (!parseVideoId.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Youtube ID is required',
+          path: ['youtubeId'],
+        });
+      }
+    }
+
+    if (val.type === 'text') {
+      if (!parseText.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Content Text is required',
+          path: ['text'],
+        });
+      }
+    }
+  });

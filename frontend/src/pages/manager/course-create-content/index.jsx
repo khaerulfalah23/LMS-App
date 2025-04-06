@@ -1,4 +1,5 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   ClassicEditor,
   Bold,
@@ -15,8 +16,45 @@ import {
   Undo,
 } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
+import { useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import { contentSchema } from '../../../utils/zodSchema';
+import { createContent } from '../../../services/courseService';
+import { useMutation } from '@tanstack/react-query';
 
 export default function ManageContentCreatePage() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm({
+    resolver: zodResolver(contentSchema),
+  });
+
+  const type = watch('type');
+
+  const mutateCreate = useMutation({
+    mutationFn: (data) => createContent(data),
+  });
+
+  const onSubmit = async (values) => {
+    try {
+      await mutateCreate.mutateAsync({
+        ...values,
+        courseId: id,
+      });
+
+      navigate(`/manager/courses/${id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div
@@ -52,7 +90,10 @@ export default function ManageContentCreatePage() {
           </div>
         </div>
       </header>
-      <form className='flex flex-col w-[930px] rounded-[30px] p-[30px] gap-[30px] bg-[#F8FAFB]'>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='flex flex-col w-[930px] rounded-[30px] p-[30px] gap-[30px] bg-[#F8FAFB]'
+      >
         <div className='flex flex-col gap-[10px]'>
           <label htmlFor='title' className='font-semibold'>
             Content Title
@@ -64,12 +105,16 @@ export default function ManageContentCreatePage() {
               alt='icon'
             />
             <input
+              {...register('title')}
               type='text'
               id='title'
               className='appearance-none outline-none w-full py-3 font-semibold placeholder:font-normal placeholder:text-[#838C9D] !bg-transparent'
               placeholder='Write better name for your course'
             />
           </div>
+          <span className='error-message text-[#FF435A]'>
+            {errors?.title?.message}
+          </span>
         </div>
         <div className='flex flex-col gap-[10px]'>
           <label htmlFor='type' className='font-semibold'>
@@ -82,6 +127,7 @@ export default function ManageContentCreatePage() {
               alt='icon'
             />
             <select
+              {...register('type')}
               id='type'
               className='appearance-none outline-none w-full py-3 px-2 -mx-2 font-semibold placeholder:font-normal placeholder:text-[#838C9D] !bg-transparent'
             >
@@ -97,66 +143,85 @@ export default function ManageContentCreatePage() {
               alt='icon'
             />
           </div>
+          <span className='error-message text-[#FF435A]'>
+            {errors?.type?.message}
+          </span>
         </div>
-        <div className='flex flex-col gap-[10px]'>
-          <label htmlFor='video' className='font-semibold'>
-            Youtube Video ID
-          </label>
-          <div className='flex items-center w-full rounded-full border border-[#CFDBEF] gap-3 px-5 transition-all duration-300 focus-within:ring-2 focus-within:ring-[#662FFF]'>
-            <img
-              src='/assets/images/icons/bill-black.svg'
-              className='w-6 h-6'
-              alt='icon'
-            />
-            <input
-              type='text'
-              id='video'
-              className='appearance-none outline-none w-full py-3 font-semibold placeholder:font-normal placeholder:text-[#838C9D] !bg-transparent'
-              placeholder='Write tagline for better copy'
-            />
+        {type === 'video' && (
+          <div className='flex flex-col gap-[10px]'>
+            <label htmlFor='video' className='font-semibold'>
+              Youtube Video ID
+            </label>
+            <div className='flex items-center w-full rounded-full border border-[#CFDBEF] gap-3 px-5 transition-all duration-300 focus-within:ring-2 focus-within:ring-[#662FFF]'>
+              <img
+                src='/assets/images/icons/bill-black.svg'
+                className='w-6 h-6'
+                alt='icon'
+              />
+              <input
+                {...register('youtubeId')}
+                type='text'
+                id='video'
+                className='appearance-none outline-none w-full py-3 font-semibold placeholder:font-normal placeholder:text-[#838C9D] !bg-transparent'
+                placeholder='Write tagline for better copy'
+              />
+            </div>
+            <span className='error-message text-[#FF435A]'>
+              {errors?.youtubeId?.message}
+            </span>
           </div>
-        </div>
-        <div className='flex flex-col gap-[10px]'>
-          <label className='font-semibold'>Content Text</label>
-          <CKEditor
-            editor={ClassicEditor}
-            config={{
-              licenseKey: import.meta.env.VITE_CKEDITOR_LISENCE_KEY,
-              toolbar: [
-                'undo',
-                'redo',
-                '|',
-                'heading',
-                '|',
-                'bold',
-                'italic',
-                '|',
-                'link',
-                'insertTable',
-                'mediaEmbed',
-                '|',
-                'bulletedList',
-                'numberedList',
-                'indent',
-                'outdent',
-              ],
-              plugins: [
-                Bold,
-                Essentials,
-                Heading,
-                Indent,
-                IndentBlock,
-                Italic,
-                Link,
-                List,
-                MediaEmbed,
-                Paragraph,
-                Table,
-                Undo,
-              ],
-            }}
-          />
-        </div>
+        )}
+        {type === 'text' && (
+          <div className='flex flex-col gap-[10px]'>
+            <label className='font-semibold'>Content Text</label>
+            <CKEditor
+              editor={ClassicEditor}
+              config={{
+                licenseKey: import.meta.env.VITE_CKEDITOR_LISENCE_KEY,
+                toolbar: [
+                  'undo',
+                  'redo',
+                  '|',
+                  'heading',
+                  '|',
+                  'bold',
+                  'italic',
+                  '|',
+                  'link',
+                  'insertTable',
+                  'mediaEmbed',
+                  '|',
+                  'bulletedList',
+                  'numberedList',
+                  'indent',
+                  'outdent',
+                ],
+                plugins: [
+                  Bold,
+                  Essentials,
+                  Heading,
+                  Indent,
+                  IndentBlock,
+                  Italic,
+                  Link,
+                  List,
+                  MediaEmbed,
+                  Paragraph,
+                  Table,
+                  Undo,
+                ],
+              }}
+              onChange={(_, editor) => {
+                const data = editor.getData();
+
+                setValue('text', data);
+              }}
+            />
+            <span className='error-message text-[#FF435A]'>
+              {errors?.text?.message}
+            </span>
+          </div>
+        )}
         <div className='flex items-center gap-[14px]'>
           <button
             type='button'
