@@ -1,3 +1,21 @@
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import {
+  ClassicEditor,
+  Bold,
+  Essentials,
+  Heading,
+  Indent,
+  IndentBlock,
+  Italic,
+  Link,
+  List,
+  MediaEmbed,
+  Paragraph,
+  Table,
+  Undo,
+} from 'ckeditor5';
+import 'ckeditor5/ckeditor5.css';
+
 export default function ManageContentCreatePage() {
   return (
     <>
@@ -100,9 +118,10 @@ export default function ManageContentCreatePage() {
         </div>
         <div className='flex flex-col gap-[10px]'>
           <label className='font-semibold'>Content Text</label>
-          {/* <CKEditor
+          <CKEditor
             editor={ClassicEditor}
             config={{
+              licenseKey: import.meta.env.VITE_CKEDITOR_LISENCE_KEY,
               toolbar: [
                 'undo',
                 'redo',
@@ -136,7 +155,7 @@ export default function ManageContentCreatePage() {
                 Undo,
               ],
             }}
-          /> */}
+          />
         </div>
         <div className='flex items-center gap-[14px]'>
           <button
