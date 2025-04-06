@@ -8,6 +8,7 @@ import secureLocalStorage from 'react-secure-storage';
 import ManageCoursePage from '../pages/manager/courses';
 import ManageCreateCoursePage from '../pages/manager/create-courses';
 import ManageCourseDetailPage from '../pages/manager/course-detail';
+import ManageContentCreatePage from '../pages/manager/course-create-content';
 import { getCategories } from '../services/categoryService';
 import { getCourseDetail, getCourses } from '../services/courseService';
 
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
           return { categories, course: course?.data };
         },
         element: <ManageCreateCoursePage />,
+      },
+      {
+        path: '/manager/courses/:id/create',
+        element: <ManageContentCreatePage />,
       },
     ],
   },
