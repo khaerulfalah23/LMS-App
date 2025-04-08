@@ -15,9 +15,10 @@ import {
   getCourses,
   getDetailContent,
 } from '../services/courseService';
+import { getStudents } from '../services/studentService';
 import ManageCoursePreviewPage from '../pages/manager/course-preview';
 import ManageStudentsPage from '../pages/manager/students';
-import { getStudents } from '../services/studentService';
+import ManageStudentCreatePage from '../pages/manager/students-create';
 
 const router = createBrowserRouter([
   {
@@ -127,6 +128,10 @@ const router = createBrowserRouter([
           return students?.data;
         },
         element: <ManageStudentsPage />,
+      },
+      {
+        path: '/manager/students/create',
+        element: <ManageStudentCreatePage />,
       },
     ],
   },

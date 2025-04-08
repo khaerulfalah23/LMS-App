@@ -53,3 +53,12 @@ export const contentSchema = z
       }
     }
   });
+
+export const createStudentSchema = z.object({
+  name: z.string().min(5),
+  email: z.string().email(),
+  password: z.string().min(5),
+  photo: z
+    .any()
+    .refine((file) => file?.name, { message: 'Thumbnail is required' }),
+});
