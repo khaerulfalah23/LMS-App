@@ -16,6 +16,8 @@ import {
   getDetailContent,
 } from '../services/courseService';
 import ManageCoursePreviewPage from '../pages/manager/course-preview';
+import ManageStudentsPage from '../pages/manager/students';
+import { getStudents } from '../services/studentService';
 
 const router = createBrowserRouter([
   {
@@ -116,6 +118,15 @@ const router = createBrowserRouter([
           return course?.data;
         },
         element: <ManageCoursePreviewPage />,
+      },
+      {
+        path: '/manager/students',
+        loader: async () => {
+          const students = await getStudents();
+
+          return students?.data;
+        },
+        element: <ManageStudentsPage />,
       },
     ],
   },
