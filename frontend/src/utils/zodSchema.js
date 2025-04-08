@@ -62,3 +62,8 @@ export const createStudentSchema = z.object({
     .any()
     .refine((file) => file?.name, { message: 'Thumbnail is required' }),
 });
+
+export const updateStudentSchema = createStudentSchema.omit({
+  password: true,
+  photo: true,
+});
