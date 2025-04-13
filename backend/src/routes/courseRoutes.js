@@ -5,6 +5,7 @@ import { fileFilter, fileStorageCourse } from '../utils/multer.js';
 import {
   deleteContentCourse,
   deleteCourse,
+  deleteStudentToCourse,
   getCourseById,
   getCourses,
   getDetailContent,
@@ -62,6 +63,12 @@ courseRoutes.post(
   verifyToken,
   validateRequest(addStudentCourseSchema),
   postStudentToCourse
+);
+courseRoutes.put(
+  '/courses/students/:id',
+  verifyToken,
+  validateRequest(addStudentCourseSchema),
+  deleteStudentToCourse
 );
 
 export default courseRoutes;
