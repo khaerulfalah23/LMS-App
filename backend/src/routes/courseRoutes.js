@@ -11,10 +11,11 @@ import {
   getStudentsByCourseId,
   postContentCourse,
   postCourse,
+  postStudentToCourse,
   updateContentCourse,
   updateCourse,
 } from '../controllers/courseController.js';
-import { contentSchema } from '../utils/schema.js';
+import { addStudentCourseSchema, contentSchema } from '../utils/schema.js';
 import { validateRequest } from '../middlewares/validateRequest.js';
 
 const courseRoutes = express.Router();
@@ -56,5 +57,11 @@ courseRoutes.delete('/courses/contents/:id', verifyToken, deleteContentCourse);
 courseRoutes.get('/courses/contents/:id', verifyToken, getDetailContent);
 
 courseRoutes.get('/courses/students/:id', verifyToken, getStudentsByCourseId);
+courseRoutes.post(
+  '/courses/students/:id',
+  verifyToken,
+  validateRequest(addStudentCourseSchema),
+  postStudentToCourse
+);
 
 export default courseRoutes;
