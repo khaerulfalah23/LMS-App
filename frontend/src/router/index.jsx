@@ -28,12 +28,13 @@ import ManageStudentCreatePage from '../pages/manager/students-create';
 import StudentCourseList from '../pages/manager/student-course';
 import StudentForm from '../pages/manager/student-course/student-form';
 import StudentPage from '../pages/student';
+import HomePage from '../pages/home';
 import { getOverviews } from '../services/overviewService';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <ManagerHomePage />,
+    element: <HomePage />,
   },
   {
     path: '/manager/sign-up',
