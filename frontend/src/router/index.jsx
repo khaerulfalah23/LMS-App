@@ -14,11 +14,13 @@ import {
   getCourseDetail,
   getCourses,
   getDetailContent,
+  getStudentsCourse,
 } from '../services/courseService';
 import { getDetailStudent, getStudents } from '../services/studentService';
 import ManageCoursePreviewPage from '../pages/manager/course-preview';
 import ManageStudentsPage from '../pages/manager/students';
 import ManageStudentCreatePage from '../pages/manager/students-create';
+import StudentCourseList from '../pages/manager/student-course';
 
 const router = createBrowserRouter([
   {
@@ -141,6 +143,15 @@ const router = createBrowserRouter([
           return student?.data;
         },
         element: <ManageStudentCreatePage />,
+      },
+      {
+        path: '/manager/courses/students/:id',
+        loader: async ({ params }) => {
+          const course = await getStudentsCourse(params.id);
+
+          return course?.data;
+        },
+        element: <StudentCourseList />,
       },
     ],
   },
