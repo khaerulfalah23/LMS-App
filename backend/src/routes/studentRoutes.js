@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   deleteStudent,
+  getCoursesStudents,
   getStudentById,
   getStudents,
   postStudent,
@@ -19,6 +20,7 @@ const upload = multer({
 
 studentRoutes.get('/students', verifyToken, getStudents);
 studentRoutes.get('/students/:id', verifyToken, getStudentById);
+studentRoutes.get('/students-courses', verifyToken, getCoursesStudents);
 studentRoutes.post(
   '/students',
   verifyToken,
