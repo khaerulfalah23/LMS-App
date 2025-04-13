@@ -21,6 +21,7 @@ import ManageCoursePreviewPage from '../pages/manager/course-preview';
 import ManageStudentsPage from '../pages/manager/students';
 import ManageStudentCreatePage from '../pages/manager/students-create';
 import StudentCourseList from '../pages/manager/student-course';
+import StudentForm from '../pages/manager/student-course/student-form';
 
 const router = createBrowserRouter([
   {
@@ -152,6 +153,15 @@ const router = createBrowserRouter([
           return course?.data;
         },
         element: <StudentCourseList />,
+      },
+      {
+        path: '/manager/courses/students/:id/add',
+        loader: async () => {
+          const students = await getStudents();
+
+          return students?.data;
+        },
+        element: <StudentForm />,
       },
     ],
   },
