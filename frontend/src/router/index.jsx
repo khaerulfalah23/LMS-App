@@ -1,5 +1,6 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
 import { MANAGER_SESSION, STORAGE_KEY, STUDENT_SESSION } from '../utils/const';
+import ManagerHomePage from '../pages/manager/home';
 import SignUpPage from '../pages/SignUp';
 import SignInPage from '../pages/SignIn';
 import SuccessCheckoutPage from '../pages/SuccessCheckout';
@@ -27,15 +28,12 @@ import ManageStudentCreatePage from '../pages/manager/students-create';
 import StudentCourseList from '../pages/manager/student-course';
 import StudentForm from '../pages/manager/student-course/student-form';
 import StudentPage from '../pages/student';
+import { getOverviews } from '../services/overviewService';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: (
-      <div>
-        <h1>hello</h1>
-      </div>
-    ),
+    element: <ManagerHomePage />,
   },
   {
     path: '/manager/sign-up',
@@ -83,11 +81,12 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: (
-          <div>
-            <h1>hello</h1>
-          </div>
-        ),
+        loader: async () => {
+          const overviews = await getOverviews();
+
+          return overviews?.data;
+        },
+        element: <ManagerHomePage />,
       },
       {
         path: '/manager/courses',
