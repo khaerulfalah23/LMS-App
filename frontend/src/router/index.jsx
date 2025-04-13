@@ -1,5 +1,5 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
-import { MANAGER_SESSION, STORAGE_KEY } from '../utils/const';
+import { MANAGER_SESSION, STORAGE_KEY, STUDENT_SESSION } from '../utils/const';
 import SignUpPage from '../pages/SignUp';
 import SignInPage from '../pages/SignIn';
 import SuccessCheckoutPage from '../pages/SuccessCheckout';
@@ -16,12 +16,17 @@ import {
   getDetailContent,
   getStudentsCourse,
 } from '../services/courseService';
-import { getDetailStudent, getStudents } from '../services/studentService';
+import {
+  getCoursesStudents,
+  getDetailStudent,
+  getStudents,
+} from '../services/studentService';
 import ManageCoursePreviewPage from '../pages/manager/course-preview';
 import ManageStudentsPage from '../pages/manager/students';
 import ManageStudentCreatePage from '../pages/manager/students-create';
 import StudentCourseList from '../pages/manager/student-course';
 import StudentForm from '../pages/manager/student-course/student-form';
+import StudentPage from '../pages/student';
 
 const router = createBrowserRouter([
   {
@@ -34,10 +39,28 @@ const router = createBrowserRouter([
   },
   {
     path: '/manager/sign-up',
+    loader: async () => {
+      const session = secureLocalStorage.getItem(STORAGE_KEY);
+
+      if (session && session.role === 'manager') {
+        throw redirect('/manager');
+      }
+
+      return true;
+    },
     element: <SignUpPage />,
   },
   {
     path: '/manager/sign-in',
+    loader: async () => {
+      const session = secureLocalStorage.getItem(STORAGE_KEY);
+
+      if (session && session.role === 'manager') {
+        throw redirect('/manager');
+      }
+
+      return true;
+    },
     element: <SignInPage />,
   },
   {
@@ -164,6 +187,53 @@ const router = createBrowserRouter([
         element: <StudentForm />,
       },
     ],
+  },
+  {
+    path: '/student',
+    id: STUDENT_SESSION,
+    loader: async () => {
+      const session = secureLocalStorage.getItem(STORAGE_KEY);
+
+      if (!session || session.role !== 'student') {
+        throw redirect('/student/sign-in');
+      }
+
+      return session;
+    },
+    element: <LayoutDashboard isAdmin={false} />,
+    children: [
+      {
+        index: true,
+        loader: async () => {
+          const courses = await getCoursesStudents();
+
+          return courses?.data;
+        },
+        element: <StudentPage />,
+      },
+      {
+        path: '/student/detail-course/:id',
+        loader: async ({ params }) => {
+          const course = await getCourseDetail(params.id, true);
+
+          return course?.data;
+        },
+        element: <ManageCoursePreviewPage isAdmin={false} />,
+      },
+    ],
+  },
+  {
+    path: '/student/sign-in',
+    loader: async () => {
+      const session = secureLocalStorage.getItem(STORAGE_KEY);
+
+      if (session && session.role === 'student') {
+        throw redirect('/student');
+      }
+
+      return true;
+    },
+    element: <SignInPage type='student' />,
   },
 ]);
 

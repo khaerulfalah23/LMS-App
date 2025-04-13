@@ -5,10 +5,11 @@ import Header from './header';
 export default function LayoutDashboard({ isAdmin = true }) {
   const session = useLoaderData();
   const isManagerPreviewPage = useMatch('/manager/courses/:id/preview');
+  const isStudentPreviewPage = useMatch('/student/detail-course/:id');
 
   return (
     <>
-      {isManagerPreviewPage !== null ? (
+      {isManagerPreviewPage !== null || isStudentPreviewPage !== null ? (
         <Outlet />
       ) : (
         <div className='flex min-h-screen'>
